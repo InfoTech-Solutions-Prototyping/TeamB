@@ -7,16 +7,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Handles the local SQLite cache of SA's catalogue.
- * Data is fetched from SA and stored here so we can browse it offline.
- */
+
+ //Handles the local SQLite cache of SA's catalogue.
+ //Data is fetched from SA and stored here so we can browse it offline.
+
 public class SACatalogueDAO {
 
-    /**
-     * Clears the local cache and inserts all items fresh from SA.
-     * Called after fetching the catalogue from SA.
-     */
+
+     //Clears the local cache and inserts all items fresh from SA.
+     //Called after fetching the catalogue from SA.
+
     public boolean replaceAll(List<SACatalogueItem> items) {
         String deleteSql = "DELETE FROM sa_catalogue";
         String insertSql = "INSERT INTO sa_catalogue (item_id, description, package_type, " +
@@ -60,9 +60,9 @@ public class SACatalogueDAO {
         }
     }
 
-    /**
-     * Returns all cached SA catalogue items.
-     */
+
+     //Returns all cached SA catalogue items.
+
     public List<SACatalogueItem> getAll() {
         String sql = "SELECT * FROM sa_catalogue ORDER BY item_id";
         List<SACatalogueItem> items = new ArrayList<>();
@@ -85,9 +85,9 @@ public class SACatalogueDAO {
         return items;
     }
 
-    /**
-     * Searches the cached catalogue by keyword in item ID or description.
-     */
+
+     //Searches the cached catalogue by keyword in item ID or description.
+
     public List<SACatalogueItem> search(String keyword) {
         String sql = "SELECT * FROM sa_catalogue WHERE item_id LIKE ? OR description LIKE ? ORDER BY item_id";
         List<SACatalogueItem> items = new ArrayList<>();
@@ -113,9 +113,9 @@ public class SACatalogueDAO {
         return items;
     }
 
-    /**
-     * Gets a single cached item by ID.
-     */
+
+     //Gets a single cached item by ID.
+
     public SACatalogueItem getById(String itemId) {
         String sql = "SELECT * FROM sa_catalogue WHERE item_id = ?";
 

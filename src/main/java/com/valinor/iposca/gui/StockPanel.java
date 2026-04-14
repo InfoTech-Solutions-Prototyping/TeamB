@@ -22,8 +22,8 @@ public class StockPanel extends JPanel {
     private JTextField searchField;
 
     private final String[] columns = {
-            "Item ID", "Description", "Pkg Type", "Unit", "Units/Pack",
-            "Bulk Cost (£)", "Markup %", "Retail (£)", "Availability", "Stock Limit", "Status"
+            "Item ID", "Description", "Package Type", "Unit", "Units in Pack",
+            "Package Cost (£)", "Markup %", "Retail (£)", "Availability", "Stock Limit", "Status"
     };
 
     public StockPanel() {
@@ -180,7 +180,7 @@ public class StockPanel extends JPanel {
         f.add(new JLabel("Package Type (e.g. box):"));   f.add(pkgF);
         f.add(new JLabel("Unit (e.g. Caps, ml):"));      f.add(unitF);
         f.add(new JLabel("Units in Pack:"));              f.add(uipF);
-        f.add(new JLabel("Bulk Cost (£):"));              f.add(costF);
+        f.add(new JLabel("Package Cost (£):"));         f.add(costF);
         f.add(new JLabel("Markup Rate (%):"));            f.add(mkF);
         f.add(new JLabel("Initial Availability:"));       f.add(avF);
         f.add(new JLabel("Low Stock Limit:"));            f.add(limF);
@@ -234,7 +234,7 @@ public class StockPanel extends JPanel {
         f.add(new JLabel("Package Type:"));   f.add(pkgF);
         f.add(new JLabel("Unit:"));           f.add(unitF);
         f.add(new JLabel("Units in Pack:"));  f.add(uipF);
-        f.add(new JLabel("Bulk Cost (£):")); f.add(costF);
+        f.add(new JLabel("Package Cost (£):")); f.add(costF);
         f.add(new JLabel("Markup (%):"));     f.add(mkF);
         f.add(new JLabel("Availability:"));   f.add(avF);
         f.add(new JLabel("Stock Limit:"));    f.add(limF);
@@ -266,15 +266,21 @@ public class StockPanel extends JPanel {
 
         String id = (String) tableModel.getValueAt(r, 0);
         String desc = (String) tableModel.getValueAt(r, 1);
+        int avail = Integer.parseInt(tableModel.getValueAt(r, 8).toString());
 
-        if (JOptionPane.showConfirmDialog(this, "Delete " + id + " - " + desc + "?",
-                "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+        String msg = avail > 0
+                ? "WARNING: \"" + desc + "\" still has " + avail + " packs in stock.\nDelete anyway?"
+                : "Delete " + id + " - " + desc + "?";
+
+        if (JOptionPane.showConfirmDialog(this, msg,
+                "Confirm Delete", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
             if (stockDAO.deleteStockItem(id)) {
                 JOptionPane.showMessageDialog(this, "Deleted.");
                 refreshTable();
             }
         }
     }
+
 
     private void showRecordDeliveryDialog() {
         int r = stockTable.getSelectedRow();

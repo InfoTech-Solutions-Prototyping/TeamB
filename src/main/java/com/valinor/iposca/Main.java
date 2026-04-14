@@ -28,6 +28,13 @@ public class Main {
         // set up database tables (skips if they already exist)
         DatabaseManager.initialiseDatabase();
 
+        try {
+            new API.CatalogueServer().start();
+        } catch (Exception e) {
+            System.err.println("Could not start catalogue server: " + e.getMessage());
+        }
+
+
         // open the sign in window
         SwingUtilities.invokeLater(() -> {
             SignInFrame signIn = new SignInFrame();

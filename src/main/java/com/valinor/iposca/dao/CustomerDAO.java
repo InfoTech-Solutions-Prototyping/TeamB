@@ -2,6 +2,8 @@ package com.valinor.iposca.dao;
 
 import com.valinor.iposca.db.DatabaseManager;
 import com.valinor.iposca.model.AccountHolder;
+import com.valinor.iposca.dao.TemplateDAO;
+
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -720,62 +722,69 @@ public class CustomerDAO {
      * Layout follows Appendix 6 of the brief.
      */
     private String generateFirstReminderText(AccountHolder holder, LocalDate paymentDate) {
-        return String.format(
-            "========== 1ST REMINDER ==========\n" +
-            "To: %s\n" +
-            "    %s\n\n" +
-            "Date: %s\n\n" +
-            "Dear %s,\n\n" +
-            "REMINDER - Account No: %d\n" +
-            "Outstanding Amount: £%.2f\n\n" +
-            "According to our records, it appears that we have not yet received\n" +
-            "payment for your outstanding balance.\n\n" +
-            "We would appreciate payment by %s.\n\n" +
-            "If you have already sent a payment to us recently, please accept\n" +
-            "our apologies.\n\n" +
-            "Yours sincerely,\n" +
-            "The Management\n" +
-            "==================================\n",
-            holder.getFullName(),
-            holder.getAddress() != null ? holder.getAddress() : "",
-            LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-            holder.getFullName(),
-            holder.getAccountId(),
-            holder.getOutstandingBalance(),
-            paymentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-        );
+        TemplateDAO templateDAO = new TemplateDAO();
+        String template = templateDAO.getDetail("first_reminder_template");
+
+        // If no template saved, use default
+        if (template == null || template.trim().isEmpty()) {
+            template = "========== 1ST REMINDER ==========\n"
+                    + "To: {customer_name}\n    {address}\n\nDate: {today}\n\n"
+                    + "Dear {customer_name},\n\n"
+                    + "REMINDER - Account No: {account_id}\n"
+                    + "Outstanding Amount: £{balance}\n\n"
+                    + "According to our records, it appears that we have not yet received\n"
+                    + "payment for your outstanding balance.\n\n"
+                    + "We would appreciate payment by {due_date}.\n\n"
+                    + "If you have already sent a payment to us recently, please accept\n"
+                    + "our apologies.\n\n"
+                    + "Yours sincerely,\nThe Management\n"
+                    + "==================================\n";
+        }
+
+        String pharmacyName = templateDAO.getDetail("pharmacy_name");
+
+        return template
+                .replace("{customer_name}", holder.getFullName())
+                .replace("{address}", holder.getAddress() != null ? holder.getAddress() : "")
+                .replace("{today}", LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                .replace("{account_id}", String.valueOf(holder.getAccountId()))
+                .replace("{balance}", String.format("%.2f", holder.getOutstandingBalance()))
+                .replace("{due_date}", paymentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                .replace("{pharmacy_name}", pharmacyName != null ? pharmacyName : "");
     }
 
-    /**
-     * Generates the text for a 2nd payment reminder.
-     * Layout follows Appendix 6 of the brief.
-     */
     private String generateSecondReminderText(AccountHolder holder, LocalDate paymentDate) {
-        return String.format(
-            "========= 2ND REMINDER ==========\n" +
-            "To: %s\n" +
-            "    %s\n\n" +
-            "Date: %s\n\n" +
-            "Dear %s,\n\n" +
-            "SECOND REMINDER - Account No: %d\n" +
-            "Outstanding Amount: £%.2f\n\n" +
-            "It appears that we still have not yet received payment for your\n" +
-            "outstanding balance, despite the reminder previously sent to you.\n\n" +
-            "We would appreciate it if you would settle this in full by %s.\n\n" +
-            "If you have already sent a payment to us recently, please accept\n" +
-            "our apologies.\n\n" +
-            "Yours sincerely,\n" +
-            "The Management\n" +
-            "==================================\n",
-            holder.getFullName(),
-            holder.getAddress() != null ? holder.getAddress() : "",
-            LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-            holder.getFullName(),
-            holder.getAccountId(),
-            holder.getOutstandingBalance(),
-            paymentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-        );
+        TemplateDAO templateDAO = new TemplateDAO();
+        String template = templateDAO.getDetail("second_reminder_template");
+
+        // If no template saved, use default
+        if (template == null || template.trim().isEmpty()) {
+            template = "========= 2ND REMINDER ==========\n"
+                    + "To: {customer_name}\n    {address}\n\nDate: {today}\n\n"
+                    + "Dear {customer_name},\n\n"
+                    + "SECOND REMINDER - Account No: {account_id}\n"
+                    + "Outstanding Amount: £{balance}\n\n"
+                    + "It appears that we still have not yet received payment for your\n"
+                    + "outstanding balance, despite the reminder previously sent to you.\n\n"
+                    + "We would appreciate it if you would settle this in full by {due_date}.\n\n"
+                    + "If you have already sent a payment to us recently, please accept\n"
+                    + "our apologies.\n\n"
+                    + "Yours sincerely,\nThe Management\n"
+                    + "==================================\n";
+        }
+
+        String pharmacyName = templateDAO.getDetail("pharmacy_name");
+
+        return template
+                .replace("{customer_name}", holder.getFullName())
+                .replace("{address}", holder.getAddress() != null ? holder.getAddress() : "")
+                .replace("{today}", LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                .replace("{account_id}", String.valueOf(holder.getAccountId()))
+                .replace("{balance}", String.format("%.2f", holder.getOutstandingBalance()))
+                .replace("{due_date}", paymentDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                .replace("{pharmacy_name}", pharmacyName != null ? pharmacyName : "");
     }
+
 
     /**
      * Generates monthly statements for all account holders with outstanding balances.

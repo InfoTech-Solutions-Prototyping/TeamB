@@ -22,6 +22,7 @@ public class CustomerPanel extends JPanel {
     private JTable customerTable;
     private DefaultTableModel tableModel;
     private JTextField searchField;
+    private String userRole;
 
     private final String[] columns = {
             "Acc ID", "First Name", "Last Name", "Phone", "Email",
@@ -29,7 +30,8 @@ public class CustomerPanel extends JPanel {
             "1st Reminder", "2nd Reminder"
     };
 
-    public CustomerPanel() {
+    public CustomerPanel(String role) {
+        this.userRole = role;
         customerDAO = new CustomerDAO();
         setLayout(new BorderLayout(0, 0));
         setBackground(AppTheme.bg());
@@ -479,6 +481,12 @@ public class CustomerPanel extends JPanel {
     }
 
     private void restoreSelectedAccount() {
+        if (!"Manager".equals(userRole) && !"Admin".equals(userRole)) {
+            JOptionPane.showMessageDialog(this,
+                    "Only a Manager or Admin can restore accounts.",
+                    "Access Denied", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         int r = customerTable.getSelectedRow();
         if (r == -1) { JOptionPane.showMessageDialog(this, "Select a customer."); return; }
 
@@ -487,6 +495,20 @@ public class CustomerPanel extends JPanel {
         if (h == null) return;
         if ("normal".equals(h.getAccountStatus())) {
             JOptionPane.showMessageDialog(this, "Already in normal status.");
+            return;
+        }
+        if (!"in default".equals(h.getAccountStatus())) {
+            JOptionPane.showMessageDialog(this, "Account is not in default. Only accounts in default can be restored.");
+            return;
+        }
+
+        // Check if outstanding balance has been cleared
+        if (h.getOutstandingBalance() > 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Cannot restore — outstanding balance of £"
+                            + String.format("%.2f", h.getOutstandingBalance())
+                            + " must be cleared first.\nRecord a payment before restoring.",
+                    "Payment Required", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -499,6 +521,7 @@ public class CustomerPanel extends JPanel {
             }
         }
     }
+
 
     private void runStatusUpdate() {
         if (JOptionPane.showConfirmDialog(this,

@@ -1,9 +1,9 @@
 package com.valinor.iposca.model;
 
-/**
- * Represents a single item from the SA (InfoPharma) catalogue.
- * This is the wholesale catalogue — costs are what CA pays, not what customers pay.
- */
+
+ //Represents a single item from the SA (InfoPharma) catalogue.
+ //This is the wholesale catalogue — costs are what CA pays, not what customers pay.
+
 public class SACatalogueItem {
 
     private String itemId;
@@ -55,9 +55,9 @@ public class SACatalogueItem {
     public String getLastSynced() { return lastSynced; }
     public void setLastSynced(String lastSynced) { this.lastSynced = lastSynced; }
 
-    /**
-     * Total cost for one pack (cost per unit * units in pack).
-     */
+
+     //Total cost for one pack (cost per unit * units in pack).
+
     public double getPackCost() {
         return costPerUnit * unitsPerPack;
     }

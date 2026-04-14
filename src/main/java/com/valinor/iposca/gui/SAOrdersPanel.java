@@ -11,10 +11,10 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-/**
- * Order management panel for placing orders with SA and viewing order/invoice history.
- * Requires SA login (merchantId) to operate.
- */
+
+ //Order management panel for placing orders with SA and viewing order/invoice history.
+ //Requires SA login (merchantId) to operate.
+
 public class SAOrdersPanel extends JPanel {
 
     private final SACatalogueDAO catalogueDAO;
@@ -107,7 +107,7 @@ public class SAOrdersPanel extends JPanel {
         refreshTable();
     }
 
-    // ==================== LOGIN ====================
+    // Login
 
     private void doLogin() {
         if (saConnection.isLoggedIn()) {
@@ -154,7 +154,7 @@ public class SAOrdersPanel extends JPanel {
         return false;
     }
 
-    // ==================== TABLE ====================
+    // Table
 
     private void refreshTable() {
         tableModel.setRowCount(0);
@@ -196,7 +196,7 @@ public class SAOrdersPanel extends JPanel {
         }
     }
 
-    // ==================== PLACE ORDER ====================
+    // Place order
 
     private void placeOrder() {
         if (!ensureLoggedIn()) return;
@@ -275,7 +275,7 @@ public class SAOrdersPanel extends JPanel {
         }
     }
 
-    // ==================== VIEW ORDERS ====================
+    // View orders
 
     private void viewOrders() {
         if (!ensureLoggedIn()) return;
@@ -317,7 +317,7 @@ public class SAOrdersPanel extends JPanel {
                 "Orders from InfoPharma", JOptionPane.PLAIN_MESSAGE);
     }
 
-    // ==================== VIEW INVOICES ====================
+    // View invoices
 
     private void viewInvoices() {
         if (!ensureLoggedIn()) return;
@@ -359,7 +359,7 @@ public class SAOrdersPanel extends JPanel {
                 "Invoices from InfoPharma", JOptionPane.PLAIN_MESSAGE);
     }
 
-    // ==================== ACCOUNT INFO ====================
+    // Account info
 
     private void showAccountInfo() {
         if (!ensureLoggedIn()) return;

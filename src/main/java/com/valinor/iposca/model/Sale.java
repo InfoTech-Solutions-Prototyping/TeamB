@@ -3,11 +3,11 @@ package com.valinor.iposca.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents a sale transaction made at the pharmacy.
- * A sale can contain multiple items and belongs to either
- * an account holder or an occasional (walk-in) customer.
- */
+
+ //Represents a sale transaction made at the pharmacy.
+ //A sale can contain multiple items and belongs to either
+ //an account holder or an occasional (walk-in) customer.
+
 public class Sale {
 
     private int saleId;
@@ -57,7 +57,6 @@ public class Sale {
         return accountId != null;
     }
 
-    // ==================== GETTERS AND SETTERS ====================
 
     public int getSaleId() { return saleId; }
     public void setSaleId(int saleId) { this.saleId = saleId; }

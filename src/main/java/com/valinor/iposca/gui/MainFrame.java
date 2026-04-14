@@ -4,6 +4,8 @@ import com.valinor.iposca.db.DatabaseManager;
 import com.valinor.iposca.model.ApplicationUser;
 import com.valinor.iposca.util.AppTheme;
 import com.valinor.iposca.gui.SACataloguePanel;
+import com.valinor.iposca.dao.PUOrderDAO;
+
 
 
 import javax.swing.*;
@@ -130,21 +132,21 @@ public class MainFrame extends JFrame {
         if ("Admin".equals(role)) {
             tabs.addTab("User Management", new UserPanel());
         } else {
+            tabs.addTab("Order Emails", new EmailPanel());
+            tabs.addTab("Orders (PU)", new PUOrderPanel());
             tabs.addTab("Stock", new StockPanel());
-            tabs.addTab("Customers", new CustomerPanel());
+            tabs.addTab("Customers", new CustomerPanel(role));
             tabs.addTab("Sales", new SalesPanel());
             tabs.addTab("SA Catalogue", new SACataloguePanel());
             tabs.addTab("Orders (SA)", new SAOrdersPanel());
-            tabs.addTab("Templates", placeholder("Template management - coming soon"));
-
+            tabs.addTab("Templates", new TemplatePanel());
             if ("Manager".equals(role)) {
-                tabs.addTab("Reports", placeholder("Report generation - coming soon"));
-            }
+                tabs.addTab("Reports", new ReportPanel());            }
         }
 
         // test role shows everything - remove before demo
         if ("Test".equals(role)) {
-            tabs.addTab("Reports", placeholder("Report generation - coming soon"));
+            tabs.addTab("Reports", new ReportPanel());
             tabs.addTab("User Management", new UserPanel());
         }
 

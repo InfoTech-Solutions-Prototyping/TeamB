@@ -228,6 +228,17 @@ public class DatabaseManager {
                 ")"
             );
 
+            stmt.execute("CREATE TABLE IF NOT EXISTS pu_orders ("
+                    + "order_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + "customer_name TEXT NOT NULL,"
+                    + "customer_email TEXT,"
+                    + "items TEXT NOT NULL,"
+                    + "order_date TEXT NOT NULL,"
+                    + "status TEXT NOT NULL DEFAULT 'Accepted',"
+                    + "notes TEXT"
+                    + ")");
+
+
             // ==================== INSERT DEFAULT DATA ====================
 
             // Default admin account so there's always a way to log in
