@@ -2,8 +2,6 @@
 *.class
 out/
 
-# Database files
-*.db
 
 # IDE config
 .idea/
