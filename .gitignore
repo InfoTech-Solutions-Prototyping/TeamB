@@ -2,8 +2,7 @@
 *.class
 out/
 
-# Database files
-*.db
+
 
 # IDE config
 .idea/
@@ -20,7 +19,6 @@ hs_err_pid*
 replay_pid*
 
 # Package files
-*.jar
 *.war
 *.nar
 *.ear
