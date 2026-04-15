@@ -183,7 +183,7 @@ public class AppTheme {
         String icon = darkMode ? "\u2600" : "\u263D";
         JButton b = new JButton(icon);
         b.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 18));
-        b.setForeground(Color.WHITE);
+        b.setForeground(darkMode ? Color.WHITE : text());
         b.setBackground(navBar());
         b.setFocusPainted(false);
         b.setBorderPainted(false);
