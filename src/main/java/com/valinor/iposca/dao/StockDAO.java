@@ -267,6 +267,9 @@ public class StockDAO {
      * Returns false if there isn't enough stock.
      */
     public boolean reduceStock(String itemId, int quantity) {
+        if (quantity <= 0) {
+            return false;
+        }
         // First check if there's enough stock
         StockItem item = getStockItemById(itemId);
         if (item == null || item.getAvailability() < quantity) {
