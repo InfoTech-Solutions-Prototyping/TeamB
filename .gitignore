@@ -3,6 +3,7 @@
 out/
 
 
+
 # IDE config
 .idea/
 *.iml
@@ -18,7 +19,6 @@ hs_err_pid*
 replay_pid*
 
 # Package files
-*.jar
 *.war
 *.nar
 *.ear
