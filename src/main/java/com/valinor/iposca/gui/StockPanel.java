@@ -31,7 +31,7 @@ public class StockPanel extends JPanel {
         setLayout(new BorderLayout(0, 0));
         setBackground(AppTheme.bg());
 
-        add(AppTheme.headerBar("Stock Management"), BorderLayout.NORTH);
+        add(AppTheme.headerBar("Local Stock"), BorderLayout.NORTH);
 
         // content area: search + table
         JPanel content = AppTheme.contentPanel();
