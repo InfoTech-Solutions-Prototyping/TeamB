@@ -13,10 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-/**
- * Full-screen sign in window with a centered login card.
- * Styled to match the rest of the app theme.
- */
+//Full-screen sign in window with a centered login card.
 public class SignInFrame extends JFrame {
 
     private UserDAO userDAO;
@@ -149,9 +146,7 @@ public class SignInFrame extends JFrame {
         setContentPane(bg);
     }
 
-    /**
-     * Checks credentials and opens the main app if valid.
-     */
+
     private void attemptLogin() {
         String username = usernameField.getText().trim();
         String password = new String(passwordField.getPassword());
@@ -192,9 +187,7 @@ public class SignInFrame extends JFrame {
         this.dispose();
     }
 
-    /**
-     * Creates a themed text field with placeholder behaviour.
-     */
+
     private JTextField createStyledField(String placeholder) {
         JTextField field = new JTextField(placeholder);
         field.setFont(AppTheme.BODY);
@@ -225,9 +218,7 @@ public class SignInFrame extends JFrame {
         return field;
     }
 
-    /**
-     * Creates a themed password field with placeholder behaviour.
-     */
+    // password
     private JPasswordField createStyledPasswordField(String placeholder) {
         JPasswordField field = new JPasswordField();
         field.setFont(AppTheme.BODY);

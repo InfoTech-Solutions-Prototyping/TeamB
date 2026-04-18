@@ -62,7 +62,6 @@ public class SACatalogueDAO {
 
 
      //Returns all cached SA catalogue items.
-
     public List<SACatalogueItem> getAll() {
         String sql = "SELECT * FROM sa_catalogue ORDER BY item_id";
         List<SACatalogueItem> items = new ArrayList<>();
@@ -87,7 +86,6 @@ public class SACatalogueDAO {
 
 
      //Searches the cached catalogue by keyword in item ID or description.
-
     public List<SACatalogueItem> search(String keyword) {
         String sql = "SELECT * FROM sa_catalogue WHERE item_id LIKE ? OR description LIKE ? ORDER BY item_id";
         List<SACatalogueItem> items = new ArrayList<>();
@@ -115,7 +113,6 @@ public class SACatalogueDAO {
 
 
      //Gets a single cached item by ID.
-
     public SACatalogueItem getById(String itemId) {
         String sql = "SELECT * FROM sa_catalogue WHERE item_id = ?";
 

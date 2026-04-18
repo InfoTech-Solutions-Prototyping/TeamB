@@ -6,26 +6,22 @@ import com.valinor.iposca.util.AppTheme;
 
 import javax.swing.*;
 
-/**
- * Entry point for IPOS-CA.
- * Sets up the database, applies the theme, and opens the sign in window.
- */
+// Entry point for IPOS-CA.
+// Sets up the database, applies the theme, and opens the sign in window.
 
 public class Main {
 
     public static void main(String[] args) {
 
-        // cross-platform look and feel gives us full control over colours
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception e) {
             System.err.println("Could not set look and feel: " + e.getMessage());
         }
 
-        // apply theme colours to all swing components
         AppTheme.applyGlobalDefaults();
 
-        // set up database tables (skips if they already exist)
+        // set up database tables
         DatabaseManager.initialiseDatabase();
 
         try {
@@ -33,7 +29,6 @@ public class Main {
         } catch (Exception e) {
             System.err.println("Could not start catalogue server: " + e.getMessage());
         }
-
 
         // open the sign in window
         SwingUtilities.invokeLater(() -> {

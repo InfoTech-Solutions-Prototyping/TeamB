@@ -21,7 +21,6 @@ public class ApplicationUser {
         this.createdAt = createdAt;
     }
 
-    // ==================== GETTERS AND SETTERS ====================
 
     public int getUserID(){return userID;}
 

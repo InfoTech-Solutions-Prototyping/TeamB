@@ -6,8 +6,10 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class TemplateDAO {
 
+    // Handles reading and writing merchant details and reminder templates from the database
     public Map<String, String> getAllDetails() {
         Map<String, String> map = new HashMap<>();
         String sql = "SELECT detail_key, detail_value FROM merchant_details";

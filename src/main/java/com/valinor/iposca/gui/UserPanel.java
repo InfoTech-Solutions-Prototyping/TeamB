@@ -9,10 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
-/**
- * Admin panel for managing user accounts.
- * Create users, change roles, remove users, search.
- */
+// Admin panel for managing user accounts.
 public class UserPanel extends JPanel {
 
     private UserDAO userDAO;
@@ -171,7 +168,6 @@ public class UserPanel extends JPanel {
         String username = (String) tableModel.getValueAt(r, 1);
         String role = (String) tableModel.getValueAt(r, 2);
 
-        // don't let them delete the last admin
         if ("Admin".equals(role)) {
             long adminCount = 0;
             for (int i = 0; i < tableModel.getRowCount(); i++) {

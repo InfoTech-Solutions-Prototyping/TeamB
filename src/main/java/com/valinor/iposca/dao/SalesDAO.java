@@ -8,10 +8,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Handles all database operations for sales transactions.
- * Works with StockDAO to reduce stock and CustomerDAO to update balances.
- */
+// Handles all database operations for sales transactions.
+// Works with StockDAO to reduce stock and CustomerDAO to update balances.
 public class SalesDAO {
 
     private StockDAO stockDAO;
@@ -22,10 +20,7 @@ public class SalesDAO {
         this.customerDAO = new CustomerDAO();
     }
 
-    /**
-     * Records a complete sale. then saves the sale, its items, reduces stock
-     * and if it's a credit sale it will add it to the customer's outstanding balance.
-     */
+    //Records a complete sale. then saves the sale, its items, reduces stock and if it's a credit sale it will add it to the customer's outstanding balance.
     public int recordSale(Sale sale) {
         String insertSale = "INSERT INTO sales (account_id, subtotal, vat_amount, discount_amount, " +
                 "total, payment_method, card_type, card_first_four, card_last_four, " +
@@ -122,9 +117,7 @@ public class SalesDAO {
         }
     }
 
-    /**
-     * Fetches a sale by its ID, including all its line items.
-     */
+    //Fetches a sale by its ID, including all its line items.
     public Sale getSaleById(int saleId) {
         String saleSql = "SELECT * FROM sales WHERE sale_id = ?";
         String itemsSql = "SELECT si.*, s.description FROM sale_items si " +
@@ -176,10 +169,7 @@ public class SalesDAO {
         }
     }
 
-    /**
-     * Gets all sales, newest first. Doesn't load line items
-     * (use getSaleById for that).
-     */
+    // Gets all sales, newest first. Doesn't load line items
     public List<Sale> getAllSales() {
         String sql = "SELECT * FROM sales ORDER BY sale_date DESC";
         List<Sale> sales = new ArrayList<>();
@@ -203,9 +193,7 @@ public class SalesDAO {
         return sales;
     }
 
-    /**
-     * Gets sales within a date range. Used by reports.
-     */
+    // Gets sales within a date range. Used by reports.
     public List<Sale> getSalesByDateRange(String startDate, String endDate) {
         String sql = "SELECT * FROM sales WHERE sale_date BETWEEN ? AND ? ORDER BY sale_date DESC";
         List<Sale> sales = new ArrayList<>();
@@ -231,10 +219,7 @@ public class SalesDAO {
         return sales;
     }
 
-    /**
-     * Builds a receipt/invoice string for a given sale.
-     * Layout loosely follows Appendix 7 from the brief.
-     */
+    // Builds a receipt/invoice string for a given sale.
     public String generateReceipt(int saleId) {
         Sale sale = getSaleById(saleId);
         if (sale == null) {
@@ -298,9 +283,7 @@ public class SalesDAO {
         return receipt.toString();
     }
 
-    /**
-     * Gets a merchant detail from the merchant_details table.
-     */
+    //Gets a merchant detail from the merchant_details table.
     private String getMerchantDetail(String key) {
         String sql = "SELECT detail_value FROM merchant_details WHERE detail_key = ?";
 
@@ -327,9 +310,8 @@ public class SalesDAO {
         return "";
     }
 
-    /**
-     * Pulls a Sale object out of a result set row.
-     */
+
+    //Pulls a Sale object out of a result set row.
     private Sale extractSaleFromResultSet(ResultSet rs) throws SQLException {
         Sale sale = new Sale();
         sale.setSaleId(rs.getInt("sale_id"));

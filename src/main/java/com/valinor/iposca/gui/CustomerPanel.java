@@ -11,11 +11,9 @@ import java.util.List;
 import java.util.ArrayList;
 
 
-/**
- * Customer account management screen.
- * Create, edit, delete customers, record payments,
- * generate reminders and monthly statements.
- */
+// Customer account management screen.
+// Create, edit, delete customers, record payments,
+// generate reminders and monthly statements.
 public class CustomerPanel extends JPanel {
 
     private CustomerDAO customerDAO;

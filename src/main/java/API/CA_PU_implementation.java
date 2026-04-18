@@ -3,6 +3,8 @@ package API;
 import java.sql.*;
 import java.util.*;
 
+// This is api was not used in the end, as we went for the HTTP approach instead
+// See API/CatalogueServer.java for the live implementation
 
  //CA -> PU Implementation
  //Reads from CA's local SQLite catalogue cache (ipos_ca.db).

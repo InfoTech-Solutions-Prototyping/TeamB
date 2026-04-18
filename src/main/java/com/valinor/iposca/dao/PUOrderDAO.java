@@ -7,8 +7,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+
+// Handles all database operations for PU orders
 public class PUOrderDAO {
 
+    // Creates a new PU order with status 'Accepted'. Returns the generated order ID, or -1 on failure.
     public int createOrder(String customerName, String customerEmail, String items, String notes) {
         String sql = "INSERT INTO pu_orders (customer_name, customer_email, items, order_date, status, notes) "
                 + "VALUES (?, ?, ?, ?, 'Accepted', ?)";
@@ -28,6 +31,7 @@ public class PUOrderDAO {
         return -1;
     }
 
+    // Updates the status of an order
     public boolean updateStatus(int orderId, String newStatus) {
         String sql = "UPDATE pu_orders SET status = ? WHERE order_id = ?";
         try (Connection conn = DatabaseManager.getConnection();
@@ -41,6 +45,7 @@ public class PUOrderDAO {
         return false;
     }
 
+    // Returns all PU orders
     public List<String[]> getAllOrders() {
         List<String[]> orders = new ArrayList<>();
         String sql = "SELECT order_id, customer_name, customer_email, items, order_date, status, notes "
@@ -65,6 +70,7 @@ public class PUOrderDAO {
         return orders;
     }
 
+    // Deletes a PU order by ID. Returns true if a row was removed.
     public boolean deleteOrder(int orderId) {
         String sql = "DELETE FROM pu_orders WHERE order_id = ?";
         try (Connection conn = DatabaseManager.getConnection();

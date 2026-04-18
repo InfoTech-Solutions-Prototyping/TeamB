@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 
- //Wraps SA's API. Handles authentication, catalogue fetching,
- //order placement, and all communication with InfoPharma.
+//Wraps SA's API. Handles authentication, catalogue fetching,
+//order placement, and all communication with InfoPharma.
 
 public class SAConnectionManager {
 
@@ -25,9 +25,8 @@ public class SAConnectionManager {
     }
 
 
-     //Authenticates with SA as Cosymed.
-     //Returns true if login succeeded.
-
+    //Authenticates with SA as Cosymed.
+    // Returns true if login succeeded.
     public boolean login(String username, String password) {
         try {
             System.out.println("Attempting SA login with: [" + username + "] [" + password + "]");
@@ -49,8 +48,7 @@ public class SAConnectionManager {
 
 
 
-     //Fetches the full catalogue from SA and converts it to our model objects.
-
+    //Fetches the full catalogue from SA and converts it to our model objects.
     public List<SACatalogueItem> fetchCatalogue() {
         List<SACatalogueItem> items = new ArrayList<>();
         try {
@@ -73,8 +71,7 @@ public class SAConnectionManager {
     }
 
 
-     //Searches SA's catalogue directly (live query, not cached).
-
+    //Searches SA's catalogue directly (live query, not cached).
     public List<SACatalogueItem> searchCatalogue(String keyword) {
         List<SACatalogueItem> items = new ArrayList<>();
         try {
@@ -97,10 +94,7 @@ public class SAConnectionManager {
     }
 
 
-    //Places an order with SA.
-    //orderLines: each map must have "itemId" and "quantity".
-    //Returns the order ID string if successful, null otherwise.
-
+    //Places an order with SA
     public String placeOrder(List<Map<String, String>> orderLines) {
         if (!loggedIn || merchantId == null) {
             System.err.println("Not logged in to SA.");
@@ -115,8 +109,7 @@ public class SAConnectionManager {
     }
 
 
-     //Gets all orders for this merchant from SA.
-
+    //Gets all orders for this merchant from SA.
     public List<Map<String, String>> getOrders() {
         if (!loggedIn || merchantId == null) return new ArrayList<>();
         try {
@@ -128,8 +121,7 @@ public class SAConnectionManager {
     }
 
 
-     //Gets details for a specific order including line items.
-
+    //Gets details for a specific order including line items.
     public Map<String, String> getOrderDetails(String orderId) {
         try {
             return saApi.getOrderDetails(orderId);
@@ -140,8 +132,7 @@ public class SAConnectionManager {
     }
 
 
-     //Gets all invoices for this merchant from SA.
-
+    //Gets all invoices for this merchant from SA.
     public List<Map<String, String>> getInvoices() {
         if (!loggedIn || merchantId == null) return new ArrayList<>();
         try {
@@ -153,8 +144,7 @@ public class SAConnectionManager {
     }
 
 
-     //Gets details for a specific invoice.
-
+    //Gets details for a specific invoice.
     public Map<String, String> getInvoiceDetails(String invoiceId) {
         try {
             return saApi.getInvoiceDetails(invoiceId);
@@ -165,8 +155,7 @@ public class SAConnectionManager {
     }
 
 
-     //Gets the merchant's current balance, credit limit, and account status.
-
+    //Gets the merchant's current balance, credit limit, and account status.
     public Map<String, String> getBalanceAndStatus() {
         if (!loggedIn || merchantId == null) return null;
         try {
@@ -176,7 +165,6 @@ public class SAConnectionManager {
             return null;
         }
     }
-
 
 
     public boolean isLoggedIn() { return loggedIn; }

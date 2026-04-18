@@ -1,10 +1,6 @@
 package com.valinor.iposca.model;
 
-/**
- * Represents a customer account holder in the pharmacy.
- * Account holders can buy on credit, receive discounts, and get payment reminders.
- * Each field matches a column in the account_holders database table.
- */
+// Represents a customer account holder in the pharmacy
 public class AccountHolder {
 
     private int accountId;
@@ -15,11 +11,11 @@ public class AccountHolder {
     private String email;
     private double creditLimit;
     private double outstandingBalance;
-    private String discountType;     // "none", "fixed", or "flexible"
-    private double discountRate;     // percentage for fixed discount
-    private String accountStatus;    // "normal", "suspended", or "in default"
-    private String status1stReminder; // "no_need", "due", or "sent"
-    private String status2ndReminder; // "no_need", "due", or "sent"
+    private String discountType;
+    private double discountRate;
+    private String accountStatus;
+    private String status1stReminder;
+    private String status2ndReminder;
     private String date1stReminder;
     private String date2ndReminder;
     private String createdAt;
@@ -28,18 +24,12 @@ public class AccountHolder {
     public AccountHolder() {
     }
 
-    /**
-     * Returns the customer's full name.
-     */
+    // Returns the customer's full name.
     public String getFullName() {
         return firstName + " " + lastName;
     }
 
-    /**
-     * Checks if the customer can make purchases on credit.
-     * They can only buy on credit if their account is "normal" and
-     * adding the new amount wouldn't exceed their credit limit.
-     */
+    // Checks if the customer can make purchases on credit
     public boolean canPurchaseOnCredit(double amount) {
         if (!"normal".equals(accountStatus)) {
             return false;
@@ -47,10 +37,8 @@ public class AccountHolder {
         return (outstandingBalance + amount) <= creditLimit;
     }
 
-    /**
-     * Calculates the fixed discount amount for a given purchase total.
-     * Only applies if the discount type is "fixed".
-     */
+    // Calculates the fixed discount amount for a given purchase total.
+    // Only applies if the discount type is "fixed".
     public double calculateFixedDiscount(double purchaseTotal) {
         if ("fixed".equals(discountType)) {
             return purchaseTotal * (discountRate / 100.0);
@@ -58,10 +46,7 @@ public class AccountHolder {
         return 0.0;
     }
 
-    /**
-     * Calculates the flexible discount rate based on total monthly spending.
-     * The brief says: 1% for under £1000, 2% for £1000-£2000, 3% for over £2000.
-     */
+    // Calculates the flexible discount rate based on total monthly spending.
     public double getFlexibleDiscountRate(double monthlyTotal) {
         if (!"flexible".equals(discountType)) {
             return 0.0;
@@ -75,7 +60,6 @@ public class AccountHolder {
         }
     }
 
-    // ==================== GETTERS AND SETTERS ====================
 
     public int getAccountId() {
         return accountId;

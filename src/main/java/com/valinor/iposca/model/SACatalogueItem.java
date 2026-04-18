@@ -1,7 +1,7 @@
 package com.valinor.iposca.model;
 
 
- //Represents a single item from the SA (InfoPharma) catalogue.
+ //Represents a single item from the SA  catalogue.
  //This is the wholesale catalogue — costs are what CA pays, not what customers pay.
 
 public class SACatalogueItem {
@@ -56,7 +56,7 @@ public class SACatalogueItem {
     public void setLastSynced(String lastSynced) { this.lastSynced = lastSynced; }
 
 
-     //Total cost for one pack (cost per unit * units in pack).
+     // Total cost for one pack (cost per unit * units in pack).
 
     public double getPackCost() {
         return costPerUnit * unitsPerPack;

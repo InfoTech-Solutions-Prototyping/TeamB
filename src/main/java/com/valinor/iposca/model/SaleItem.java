@@ -1,15 +1,12 @@
 package com.valinor.iposca.model;
 
-/**
- * One line item in a sale - e.g. "3 packs of Paracetamol at £0.15 each".
- * A Sale contains one or more of these.
- */
+// One line item in a sale.
 public class SaleItem {
 
     private int saleItemId;
     private int saleId;
     private String itemId;
-    private String itemDescription; // not stored in DB, just for display
+    private String itemDescription;
     private int quantity;
     private double unitPrice;
     private double lineTotal;
@@ -30,7 +27,6 @@ public class SaleItem {
         this.lineTotal = quantity * unitPrice;
     }
 
-    // ==================== GETTERS AND SETTERS ====================
 
     public int getSaleItemId() { return saleItemId; }
     public void setSaleItemId(int saleItemId) { this.saleItemId = saleItemId; }

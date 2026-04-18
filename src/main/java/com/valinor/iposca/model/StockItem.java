@@ -1,9 +1,6 @@
 package com.valinor.iposca.model;
 
-/**
- * Represents a single item in the pharmacy's local stock.
- * Each field matches a column in the stock_items database table.
- */
+// Represents a single item in the pharmacy's local stock.
 public class StockItem {
 
     private String itemId;
@@ -16,11 +13,9 @@ public class StockItem {
     private int availability;
     private int stockLimit;
 
-    // Empty constructor for when we create a blank item to fill in later
     public StockItem() {
     }
 
-    // Full constructor for when we have all the data at once
     public StockItem(String itemId, String description, String packageType,
                      String unit, int unitsInPack, double bulkCost,
                      double markupRate, int availability, int stockLimit) {
@@ -35,30 +30,21 @@ public class StockItem {
         this.stockLimit = stockLimit;
     }
 
-    /**
-     * Calculates the retail price by applying the markup to the bulk cost.
-     * For example: bulk cost £10, markup 50% = retail price £15.
-     */
+    // Calculates the retail price by applying the markup to the bulk cost.
     public double getRetailPrice() {
         return bulkCost * (1 + markupRate / 100.0);
     }
 
-    /**
-     * Calculates the retail price including VAT.
-     * vatRate is passed in as a percentage (e.g. 20 for 20%).
-     */
+    // Calculates the retail price including VAT.
     public double getRetailPriceWithVAT(double vatRate) {
         return getRetailPrice() * (1 + vatRate / 100.0);
     }
 
-    /**
-     * Checks if this item's stock is below its minimum threshold.
-     */
+
     public boolean isLowStock() {
         return availability < stockLimit;
     }
 
-    // ==================== GETTERS AND SETTERS ====================
 
     public String getItemId() {
         return itemId;

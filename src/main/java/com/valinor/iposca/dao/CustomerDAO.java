@@ -14,20 +14,16 @@ import java.util.List;
 import java.sql.Types;
 
 
-/**
- * Handles all database operations for customer account holders.
- * Includes the automatic account status logic and reminder generation
- * as specified in the IPOS-CA-CUST requirements.
- */
+// Handles all database operations for customer account holders.
+// Includes automatic account status logic and reminder generation.
+
 public class CustomerDAO {
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    /**
-     * Creates a new account holder in the database.
-     * Returns the generated account ID, or -1 if it fails.
-     */
+
+    // Creates a new account holder. Returns the generated account ID, or -1 on failure.
     public int createAccountHolder(AccountHolder holder) {
         String sql = "INSERT INTO account_holders (first_name, last_name, address, phone, email, " +
                      "credit_limit, discount_type, discount_rate, account_status, " +
@@ -66,9 +62,7 @@ public class CustomerDAO {
         }
     }
 
-    /**
-     * Updates an existing account holder's details.
-     */
+    // Updates an existing account holder's details.
     public boolean updateAccountHolder(AccountHolder holder) {
         String sql = "UPDATE account_holders SET first_name = ?, last_name = ?, address = ?, " +
                      "phone = ?, email = ?, credit_limit = ?, discount_type = ?, discount_rate = ? " +
@@ -98,10 +92,7 @@ public class CustomerDAO {
         }
     }
 
-    /**
-     * Changes a customer's account ID.
-     * Updates all related records (sales, sale_items, payments) to match.
-     */
+    // Changes a customer's account ID and updates all related records (sales, payments) to match.
     public boolean changeAccountId(int oldId, int newId) {
         try {
             Connection conn = DatabaseManager.getConnection();
@@ -164,10 +155,7 @@ public class CustomerDAO {
         }
     }
 
-    /**
-     * Saves variable discount tiers for an account.
-     * Deletes existing tiers first, then inserts the new ones.
-     */
+    // Saves variable discount tiers for an account. Deletes existing tiers first, then inserts new ones
     public boolean saveDiscountTiers(int accountId, List<double[]> tiers) {
         try {
             Connection conn = DatabaseManager.getConnection();
@@ -214,10 +202,7 @@ public class CustomerDAO {
         }
     }
 
-    /**
-     * Gets discount tiers for an account.
-     * Returns list of {minValue, maxValue, discountRate}. maxValue = -1 means unlimited.
-     */
+    // Returns discount tiers for an account
     public List<double[]> getDiscountTiers(int accountId) {
         List<double[]> tiers = new ArrayList<>();
         String sql = "SELECT min_value, max_value, discount_rate FROM discount_tiers " +
@@ -246,10 +231,7 @@ public class CustomerDAO {
         return tiers;
     }
 
-    /**
-     * Calculates the variable discount rate for a given subtotal.
-     * Looks up which tier the subtotal falls into.
-     */
+    // Looks up which discount tier the subtotal falls into and returns that rate
     public double getVariableDiscountRate(int accountId, double subtotal) {
         List<double[]> tiers = getDiscountTiers(accountId);
         for (double[] tier : tiers) {
@@ -263,13 +245,7 @@ public class CustomerDAO {
     }
 
 
-
-
-
-    /**
-     * Deletes an account holder and all their related records from the database.
-     * Removes sale items, sales, and payments linked to this account first.
-     */
+    // Deletes an account holder and all related sale items, sales, and payments.
     public boolean deleteAccountHolder(int accountId) {
         try {
             Connection conn = DatabaseManager.getConnection();
@@ -323,9 +299,7 @@ public class CustomerDAO {
     }
 
 
-    /**
-     * Gets a single account holder by their ID.
-     */
+    // Gets a single account holder by their ID.
     public AccountHolder getAccountHolderById(int accountId) {
         String sql = "SELECT * FROM account_holders WHERE account_id = ?";
 
@@ -352,9 +326,7 @@ public class CustomerDAO {
         return null;
     }
 
-    /**
-     * Returns all account holders from the database.
-     */
+    // Returns all account holders ordered by last name then first name
     public List<AccountHolder> getAllAccountHolders() {
         String sql = "SELECT * FROM account_holders ORDER BY last_name, first_name";
         List<AccountHolder> holders = new ArrayList<>();
@@ -378,9 +350,7 @@ public class CustomerDAO {
         return holders;
     }
 
-    /**
-     * Searches account holders by name or account ID.
-     */
+    // Searches account holders by name or account ID.
     public List<AccountHolder> searchAccountHolders(String keyword) {
         String sql = "SELECT * FROM account_holders WHERE " +
                      "first_name LIKE ? OR last_name LIKE ? OR CAST(account_id AS TEXT) LIKE ? " +
@@ -410,14 +380,7 @@ public class CustomerDAO {
         return holders;
     }
 
-    /**
-     * Records a payment from an account holder.
-     * Reduces their outstanding balance and updates reminder flags if fully paid.
-     * This follows the algorithm from the brief:
-     *   if account_status != 'in default':
-     *       status_1stReminder = 'no_need'
-     *       status_2ndReminder = 'no_need'
-     */
+    // Records a payment, reduces the outstanding balance, and resets reminder flags if fully paid
     public boolean recordPayment(int accountId, double amount, String method,
                                  String cardType, String cardFirstFour,
                                  String cardLastFour, String cardExpiry) {
@@ -453,7 +416,7 @@ public class CustomerDAO {
                 pstmt2.executeUpdate();
                 pstmt2.close();
 
-                // Check if balance is now zero or less (fully paid)
+                // Check if balance is now zero or less
                 AccountHolder holder = getAccountHolderById(accountId);
                 if (holder != null && holder.getOutstandingBalance() <= 0) {
                     // Reset balance to exactly 0 if it went negative
@@ -496,10 +459,7 @@ public class CustomerDAO {
         }
     }
 
-    /**
-     * Restores an account from "in default" or "suspended" back to "normal".
-     * This can only be done by a Manager through explicit intervention.
-     */
+    // Restores an account from 'suspended' or 'in default' back to 'normal'. Manager only
     public boolean restoreAccountStatus(int accountId) {
         String sql = "UPDATE account_holders SET account_status = 'normal', " +
                      "status_1st_reminder = 'no_need', status_2nd_reminder = 'no_need' " +
@@ -519,17 +479,10 @@ public class CustomerDAO {
         }
     }
 
-    /**
-     * Runs the automatic account status update process.
-     * This checks all accounts and updates their status based on the rules in the brief:
-     *
-     * - End of calendar month: if balance > 0, payment is due (status stays normal)
-     * - 15th of next month: if still unpaid, status changes to "suspended", 1st reminder = "due"
-     * - End of next month: if still unpaid, status changes to "in default", 2nd reminder = "due"
-     *
-     * In a real production system this would run automatically on a timer.
-     * In our prototype the user triggers it manually.
-     */
+    // Runs the automatic account status update based on the day of the month.
+    // Day >= 15: normal accounts with debt become suspended (1st reminder due).
+    // Day >= 28: suspended accounts become in default (2nd reminder due).
+    // In production this would run on a timer
     public void runAccountStatusUpdate() {
         LocalDate today = LocalDate.now();
         int dayOfMonth = today.getDayOfMonth();
@@ -559,9 +512,7 @@ public class CustomerDAO {
         }
     }
 
-    /**
-     * Helper method to update account status and reminder flags.
-     */
+    // updates account status and optionally sets reminder flags.
     private void updateStatusTo(int accountId, String newStatus,
                                 String new1stReminder, String new2ndReminder) {
         StringBuilder sql = new StringBuilder("UPDATE account_holders SET account_status = ?");
@@ -587,22 +538,10 @@ public class CustomerDAO {
         }
     }
 
-    /**
-     * Generates reminders for account holders who have reminders due.
-     * Follows the pseudo-code algorithm from the brief exactly:
-     *
-     * if (status_1stReminder == 'due'):
-     *     generate 1st reminder (payment date = current date + 7 days)
-     *     status_1stReminder = 'sent'
-     *     date_2ndReminder = current date + 15 days
-     *
-     * if (status_2ndReminder == 'due'):
-     *     if (date_2ndReminder <= current date):
-     *         generate 2nd reminder (payment date = current date + 7 days)
-     *         status_2ndReminder = 'sent'
-     *
-     * Returns a list of reminder messages that were generated.
-     */
+    // Generates reminders for all accounts that have one due.
+    // 1st reminder due: sends it, marks as sent, schedules 2nd reminder for 15 days later.
+    // 2nd reminder due: sends it only if the scheduled date has arrived.
+    // Returns a list of the reminder texts that were generated.
     public List<String> generateReminders() {
         List<String> generatedReminders = new ArrayList<>();
         List<AccountHolder> allHolders = getAllAccountHolders();
@@ -652,9 +591,7 @@ public class CustomerDAO {
         return generatedReminders;
     }
 
-    /**
-     * Marks the 1st reminder as sent and schedules the 2nd reminder date.
-     */
+    // Marks the 1st reminder as sent and records the date the 2nd reminder should be sent
     private void update1stReminderSent(int accountId, String secondReminderDate) {
         String sql = "UPDATE account_holders SET status_1st_reminder = 'sent', " +
                      "date_2nd_reminder = ? WHERE account_id = ?";
@@ -672,9 +609,7 @@ public class CustomerDAO {
         }
     }
 
-    /**
-     * Marks the 2nd reminder as sent.
-     */
+    // Marks the 2nd reminder as sent.
     private void update2ndReminderSent(int accountId) {
         String sql = "UPDATE account_holders SET status_2nd_reminder = 'sent' WHERE account_id = ?";
 
@@ -690,9 +625,7 @@ public class CustomerDAO {
         }
     }
 
-    /**
-     * Gets all account holders who have outstanding balances (for statement generation).
-     */
+    // Returns all account holders who currently have an outstanding balance
     public List<AccountHolder> getAccountHoldersWithBalance() {
         String sql = "SELECT * FROM account_holders WHERE outstanding_balance > 0 " +
                      "ORDER BY last_name, first_name";
@@ -717,15 +650,11 @@ public class CustomerDAO {
         return holders;
     }
 
-    /**
-     * Generates the text for a 1st payment reminder.
-     * Layout follows Appendix 6 of the brief.
-     */
+    // Builds the 1st reminder text. Uses the saved template from TemplateDAO, or a default if none is set.
     private String generateFirstReminderText(AccountHolder holder, LocalDate paymentDate) {
         TemplateDAO templateDAO = new TemplateDAO();
         String template = templateDAO.getDetail("first_reminder_template");
 
-        // If no template saved, use default
         if (template == null || template.trim().isEmpty()) {
             template = "========== 1ST REMINDER ==========\n"
                     + "To: {customer_name}\n    {address}\n\nDate: {today}\n\n"
@@ -786,11 +715,8 @@ public class CustomerDAO {
     }
 
 
-    /**
-     * Generates monthly statements for all account holders with outstanding balances.
-     * Can only be used between the 5th and 15th of the month as per the brief.
-     * Returns a list of statement texts, or null if outside the allowed period.
-     */
+    // Generates monthly statements for all accounts with a balance.
+    // Only allowed between the 5th and 15th of the month - returns null outside that window.
     public List<String> generateMonthlyStatements() {
         LocalDate today = LocalDate.now();
         int day = today.getDayOfMonth();
@@ -829,9 +755,7 @@ public class CustomerDAO {
         return statements;
     }
 
-    /**
-     * Helper method that reads one row from the database and turns it into an AccountHolder object.
-     */
+    // Maps a database row to an AccountHolder object
     private AccountHolder extractAccountHolderFromResultSet(ResultSet rs) throws SQLException {
         AccountHolder holder = new AccountHolder();
         holder.setAccountId(rs.getInt("account_id"));

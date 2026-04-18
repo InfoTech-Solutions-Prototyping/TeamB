@@ -8,10 +8,12 @@ import java.util.List;
 
 public class ReportDAO {
 
+    // Generates plain-text reports for sales, low stock, and debtors.
     private final SalesDAO salesDAO = new SalesDAO();
     private final StockDAO stockDAO = new StockDAO();
     private final CustomerDAO customerDAO = new CustomerDAO();
 
+    // Builds a sales report
     public String generateSalesReport(String startDate, String endDate) {
         List<Sale> sales = salesDAO.getSalesByDateRange(startDate, endDate);
 
@@ -47,6 +49,7 @@ public class ReportDAO {
         return sb.toString();
     }
 
+    // Builds a report of all stock items currently at or below their stock limit.
     public String generateLowStockReport() {
         List<StockItem> lowStockItems = stockDAO.getLowStockItems();
 
@@ -67,6 +70,7 @@ public class ReportDAO {
         return sb.toString();
     }
 
+    // Builds a report of all account holders with an outstanding balance, including total debt.
     public String generateDebtorReport() {
         List<AccountHolder> holders = customerDAO.getAllAccountHolders();
 

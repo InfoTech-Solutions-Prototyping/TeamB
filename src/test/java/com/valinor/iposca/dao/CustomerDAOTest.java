@@ -8,9 +8,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Unit tests for CustomerDAO
- */
+// Unit tests for CustomerDAO
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CustomerDAOTest {
 

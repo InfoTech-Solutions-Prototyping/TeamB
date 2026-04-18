@@ -13,15 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for the interfaces between subsystems.
- *
- * Provided interface:
- * -getCatalogueItems, searchCatalogueItems, getCatalogueItemById
- *
+ * Provided interface: getCatalogueItems, searchCatalogueItems, getCatalogueItemById
  * Required interface (SA -> CA): SA_CA_interface
- *  will probs test thru connectionmanager
- *
- * These correspond to the test tables in section 7.7 of the
- * Requirements Spec doc
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class InterfaceTest {

@@ -7,16 +7,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Handles all database operations related to stock items.
- * DAO stands for Data Access Object - it separates database logic from the rest of the code.
- */
+//Handles all database operations related to stock items.
 public class StockDAO {
 
-    /**
-     * Adds a new stock item to the database.
-     * Returns true if successful, false if it fails.
-     */
+    // Adds a new stock item to the database.
     public boolean addStockItem(StockItem item) {
         String sql = "INSERT INTO stock_items (item_id, description, package_type, unit, " +
                      "units_in_pack, bulk_cost, markup_rate, availability, stock_limit) " +
@@ -46,9 +40,7 @@ public class StockDAO {
         }
     }
 
-    /**
-     * Updates an existing stock item in the database.
-     */
+    // Updates an existing stock item in the database.
     public boolean updateStockItem(StockItem item) {
         String sql = "UPDATE stock_items SET description = ?, package_type = ?, unit = ?, " +
                      "units_in_pack = ?, bulk_cost = ?, markup_rate = ?, availability = ?, " +
@@ -78,9 +70,7 @@ public class StockDAO {
         }
     }
 
-    /**
-     * Deletes a stock item from the database by its ID.
-     */
+    // Deletes a stock item from the database by its ID.
     public boolean deleteStockItem(String itemId) {
         String sql = "DELETE FROM stock_items WHERE item_id = ?";
 
@@ -98,10 +88,7 @@ public class StockDAO {
         }
     }
 
-    /**
-     * Gets a single stock item by its ID.
-     * Returns null if not found.
-     */
+    // Gets a single stock item by its ID.
     public StockItem getStockItemById(String itemId) {
         String sql = "SELECT * FROM stock_items WHERE item_id = ?";
 
@@ -129,9 +116,7 @@ public class StockDAO {
         return null;
     }
 
-    /**
-     * Returns all stock items from the database.
-     */
+    //Returns all stock items from the database.
     public List<StockItem> getAllStockItems() {
         String sql = "SELECT * FROM stock_items ORDER BY item_id";
         List<StockItem> items = new ArrayList<>();
@@ -155,9 +140,7 @@ public class StockDAO {
         return items;
     }
 
-    /**
-     * Searches stock items by keyword in the item ID or description.
-     */
+    //Searches stock items by keyword in the item ID or description.
     public List<StockItem> searchStockItems(String keyword) {
         String sql = "SELECT * FROM stock_items WHERE item_id LIKE ? OR description LIKE ? ORDER BY item_id";
         List<StockItem> items = new ArrayList<>();
@@ -166,7 +149,6 @@ public class StockDAO {
             Connection conn = DatabaseManager.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql);
 
-            // The % signs mean "anything before or after the keyword"
             String searchTerm = "%" + keyword + "%";
             pstmt.setString(1, searchTerm);
             pstmt.setString(2, searchTerm);
@@ -187,9 +169,7 @@ public class StockDAO {
         return items;
     }
 
-    /**
-     * Returns all stock items that are below their stock limit.
-     */
+    //Returns all stock items that are below their stock limit.
     public List<StockItem> getLowStockItems() {
         String sql = "SELECT * FROM stock_items WHERE availability < stock_limit ORDER BY item_id";
         List<StockItem> items = new ArrayList<>();
@@ -213,10 +193,8 @@ public class StockDAO {
         return items;
     }
 
-    /**
-     * Records a delivery and increases the stock for that item.
-     * Uses a transaction so both operations happen together or neither does.
-     */
+    //Records a delivery and increases the stock for that item.
+    //Uses a transaction so both operations happen together or neither does.
     public boolean recordDelivery(String itemId, int quantity, String notes) {
         String insertDelivery = "INSERT INTO deliveries (item_id, quantity, notes) VALUES (?, ?, ?)";
         String updateStock = "UPDATE stock_items SET availability = availability + ? WHERE item_id = ?";
@@ -224,7 +202,6 @@ public class StockDAO {
         try {
             Connection conn = DatabaseManager.getConnection();
 
-            // Start a transaction - this means if one part fails, nothing is saved
             conn.setAutoCommit(false);
 
             try {
@@ -243,12 +220,10 @@ public class StockDAO {
                 pstmt2.executeUpdate();
                 pstmt2.close();
 
-                // Both worked, so save everything
                 conn.commit();
                 return true;
 
             } catch (SQLException e) {
-                // Something went wrong, undo everything
                 conn.rollback();
                 System.err.println("Error recording delivery: " + e.getMessage());
                 return false;
@@ -262,10 +237,8 @@ public class StockDAO {
         }
     }
 
-    /**
-     * Reduces stock for an item (used when a sale happens).
-     * Returns false if there isn't enough stock.
-     */
+    //Reduces stock for an item (used when a sale happens).
+    //Returns false if there isn't enough stock.
     public boolean reduceStock(String itemId, int quantity) {
         if (quantity <= 0) {
             return false;
@@ -293,10 +266,7 @@ public class StockDAO {
         }
     }
 
-    /**
-     * Gets the current VAT rate from the system config table.
-     * Returns 0.0 if not set.
-     */
+    //Gets the current VAT rate from the system config table.
     public double getVATRate() {
         String sql = "SELECT config_value FROM system_config WHERE config_key = 'vat_rate'";
 
@@ -322,9 +292,7 @@ public class StockDAO {
         return 0.0;
     }
 
-    /**
-     * Updates the VAT rate in the system config.
-     */
+    //Updates the VAT rate in the system config.
     public boolean setVATRate(double rate) {
         String sql = "UPDATE system_config SET config_value = ? WHERE config_key = 'vat_rate'";
 
@@ -342,10 +310,8 @@ public class StockDAO {
         }
     }
 
-    /**
-     * Helper method that reads one row from a database result and turns it into a StockItem object.
-     * This avoids repeating the same code in every method that reads from the database.
-     */
+    //Helper method that reads one row from a database result and turns it into a StockItem object.
+    //This avoids repeating the same code in every method that reads from the database.
     private StockItem extractStockItemFromResultSet(ResultSet rs) throws SQLException {
         return new StockItem(
             rs.getString("item_id"),

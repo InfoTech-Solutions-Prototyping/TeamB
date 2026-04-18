@@ -15,10 +15,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Sales screen. Split view: left side is a shopping cart for new sales,
- * right side shows past sales with receipt viewing.
- */
+
 public class SalesPanel extends JPanel {
 
     private SalesDAO salesDAO;
@@ -60,8 +57,7 @@ public class SalesPanel extends JPanel {
         refreshHistory();
     }
 
-    // ==================== LEFT SIDE: NEW SALE ====================
-
+    // left side
     private JPanel buildNewSalePanel() {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
         panel.setBackground(AppTheme.bg());
@@ -157,8 +153,7 @@ public class SalesPanel extends JPanel {
         return panel;
     }
 
-    // ==================== RIGHT SIDE: HISTORY ====================
-
+    // history
     private JPanel buildHistoryPanel() {
         JPanel panel = new JPanel(new BorderLayout(5, 5));
         panel.setBackground(AppTheme.bg());
@@ -196,7 +191,7 @@ public class SalesPanel extends JPanel {
         return panel;
     }
 
-    // ==================== CART LOGIC ====================
+    // cart
 
     private void loadAccountHolders() {
         accountHolderBox.removeAllItems();
@@ -296,7 +291,7 @@ public class SalesPanel extends JPanel {
         totalLabel.setText(String.format("TOTAL: £%.2f", total));
     }
 
-    // ==================== CHECKOUT ====================
+    // checkout
 
     private void processCheckout() {
         if (cartItems.isEmpty()) { JOptionPane.showMessageDialog(this, "Cart is empty."); return; }
@@ -403,8 +398,7 @@ public class SalesPanel extends JPanel {
         }
     }
 
-    // ==================== HISTORY ====================
-
+    // history
     private void viewSelectedReceipt() {
         int r = historyTable.getSelectedRow();
         if (r == -1) { JOptionPane.showMessageDialog(this, "Select a sale."); return; }

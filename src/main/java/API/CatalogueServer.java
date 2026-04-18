@@ -12,10 +12,15 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+// HTTP server that exposes CA's catalogue to PU over localhost:8080
+// PU calls these endpoints from Python using ca_catalogue_api.py
+
+
 public class CatalogueServer {
 
     private HttpServer server;
 
+    // Starts the server
     public void start() throws IOException {
         server = HttpServer.create(new InetSocketAddress(8080), 0);
 
@@ -32,12 +37,14 @@ public class CatalogueServer {
         if (server != null) server.stop(0);
     }
 
+    // gets catalogue items as JSON array
     private void handleGetAll(HttpExchange ex) throws IOException {
         SACatalogueDAO dao = new SACatalogueDAO();
         List<SACatalogueItem> items = dao.getAll();
         sendJson(ex, itemsToJson(items));
     }
 
+    // returns items matching description keywords
     private void handleSearch(HttpExchange ex) throws IOException {
         String query = ex.getRequestURI().getQuery();
         String keyword = "";
@@ -49,6 +56,7 @@ public class CatalogueServer {
         sendJson(ex, itemsToJson(items));
     }
 
+    // returns a single item by ID
     private void handleGetById(HttpExchange ex) throws IOException {
         String query = ex.getRequestURI().getQuery();
         String id = "";

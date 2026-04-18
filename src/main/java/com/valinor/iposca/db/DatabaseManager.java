@@ -5,10 +5,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-/**
- * Manages the database connection and table creation for IPOS-CA.
- * Uses SQLite so no external database server is needed to run the prototype.
- */
+// Manages the database connection and table creation for IPOS-CA.
+// Uses SQLite so no external database server is needed to run the prototype.
 public class DatabaseManager {
 
     // The file where SQLite stores all the data
@@ -17,34 +15,28 @@ public class DatabaseManager {
     // Single shared connection used throughout the app
     private static Connection connection;
 
-    /**
-     * Returns the database connection. Creates one if it doesn't exist yet.
-     */
+    // Returns the database connection. Creates one if it doesn't exist yet.
     public static Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
-            // Manually load the SQLite driver (needed for newer JDK versions)
             try {
                 Class.forName("org.sqlite.JDBC");
             } catch (ClassNotFoundException e) {
                 throw new SQLException("SQLite JDBC driver not found. Make sure sqlite-jdbc jar is in the classpath.");
             }
             connection = DriverManager.getConnection(DB_URL);
-            // Turn on foreign key support (SQLite has it off by default)
             connection.createStatement().execute("PRAGMA foreign_keys = ON");
         }
         return connection;
     }
 
-    /**
-     * Creates all the database tables if they don't already exist.
-     * This runs once when the application starts up.
-     */
+    // Creates all the database tables if they don't already exist.
+    // This runs once when the application starts up.
     public static void initialiseDatabase() {
         try {
             Connection conn = getConnection();
             Statement stmt = conn.createStatement();
 
-            // ==================== USERS TABLE ====================
+            // users
             stmt.execute(
                 "CREATE TABLE IF NOT EXISTS users (" +
                 "    user_id     INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -55,7 +47,7 @@ public class DatabaseManager {
                 ")"
             );
 
-            // ==================== SYSTEM CONFIG TABLE ====================
+            // system config
             stmt.execute(
                 "CREATE TABLE IF NOT EXISTS system_config (" +
                 "    config_key   TEXT PRIMARY KEY," +
@@ -63,7 +55,7 @@ public class DatabaseManager {
                 ")"
             );
 
-            // ==================== STOCK ITEMS TABLE ====================
+            // stock items
             stmt.execute(
                 "CREATE TABLE IF NOT EXISTS stock_items (" +
                 "    item_id         TEXT    PRIMARY KEY," +
@@ -78,7 +70,7 @@ public class DatabaseManager {
                 ")"
             );
 
-            // ==================== DELIVERIES TABLE ====================
+            // deliveries
             stmt.execute(
                 "CREATE TABLE IF NOT EXISTS deliveries (" +
                 "    delivery_id     INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -90,7 +82,7 @@ public class DatabaseManager {
                 ")"
             );
 
-            // ==================== ACCOUNT HOLDERS TABLE ====================
+            // account holders
             stmt.execute(
                 "CREATE TABLE IF NOT EXISTS account_holders (" +
                 "    account_id          INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -112,7 +104,7 @@ public class DatabaseManager {
                 ")"
             );
 
-            // ==================== SALES TABLE ====================
+            // sales
             stmt.execute(
                 "CREATE TABLE IF NOT EXISTS sales (" +
                 "    sale_id         INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -132,7 +124,7 @@ public class DatabaseManager {
                 ")"
             );
 
-            // ==================== SALE ITEMS TABLE ====================
+            // sales item
             stmt.execute(
                 "CREATE TABLE IF NOT EXISTS sale_items (" +
                 "    sale_item_id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -146,7 +138,7 @@ public class DatabaseManager {
                 ")"
             );
 
-            // ==================== PAYMENTS RECEIVED TABLE ====================
+            // payment received
             stmt.execute(
                 "CREATE TABLE IF NOT EXISTS payments_received (" +
                 "    payment_id   INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -162,7 +154,7 @@ public class DatabaseManager {
                 ")"
             );
 
-            // ==================== ORDERS TO INFOPHARMA TABLE ====================
+            // orders
             stmt.execute(
                 "CREATE TABLE IF NOT EXISTS orders_to_infopharma (" +
                 "    order_id     TEXT PRIMARY KEY," +
@@ -177,7 +169,7 @@ public class DatabaseManager {
                 ")"
             );
 
-            // ==================== ORDER ITEMS TABLE ====================
+            // order items
             stmt.execute(
                 "CREATE TABLE IF NOT EXISTS order_items (" +
                 "    order_item_id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -191,7 +183,7 @@ public class DatabaseManager {
                 ")"
             );
 
-            // ==================== DISCOUNT TIERS TABLE ====================
+            // discount tiers
             stmt.execute(
                     "CREATE TABLE IF NOT EXISTS discount_tiers (" +
                             "    tier_id     INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -205,7 +197,7 @@ public class DatabaseManager {
 
 
 
-            // ==================== SA CATALOGUE CACHE TABLE ====================
+            // catalogue cache
             stmt.execute(
                     "CREATE TABLE IF NOT EXISTS sa_catalogue (" +
                             "    item_id         TEXT    PRIMARY KEY," +
@@ -220,7 +212,7 @@ public class DatabaseManager {
             );
 
 
-            // ==================== MERCHANT DETAILS TABLE ====================
+            // merchant details
             stmt.execute(
                 "CREATE TABLE IF NOT EXISTS merchant_details (" +
                 "    detail_key   TEXT PRIMARY KEY," +
@@ -238,8 +230,6 @@ public class DatabaseManager {
                     + "notes TEXT"
                     + ")");
 
-
-            // ==================== INSERT DEFAULT DATA ====================
 
             // Default admin account so there's always a way to log in
             stmt.execute(
@@ -268,9 +258,7 @@ public class DatabaseManager {
         }
     }
 
-    /**
-     * Closes the database connection when the application shuts down.
-     */
+    // Closes the database connection when the application shuts down
     public static void closeConnection() {
         try {
             if (connection != null && !connection.isClosed()) {

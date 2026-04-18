@@ -8,18 +8,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Handles all database operations for user accounts.
- */
+//Handles all database operations for user accounts.
 public class UserDAO {
 
-    /**
-     * Creates a new user in the database.
-     * Returns the generated user ID, -1 if username is taken,
-     * -2 if it fails.
-     */
+    //Creates a new user in the database.
     public int createUser(ApplicationUser user) {
-        //Stop duplicate usernames
         if(getUserFromUsername(user.getUsername()) != null){
             return -1;
         }
@@ -54,9 +47,7 @@ public class UserDAO {
         }
     }
 
-    /**
-     * Deletes a user from the database.
-     */
+    //Deletes a user from the database.
     public boolean deleteUser(int userID) {
         String sql = "DELETE FROM users WHERE user_id = ?";
 
@@ -74,9 +65,7 @@ public class UserDAO {
         }
     }
 
-    /**
-     * Changes a user's role
-     */
+    // Changes a user's role
     public boolean changeRole(int userId, String newRole) {
         String sql = "UPDATE users SET role = ? WHERE user_id = ?";
 
@@ -95,9 +84,7 @@ public class UserDAO {
         }
     }
 
-    /**
-     * Gets a single user by their username.
-     */
+    // Gets a single user by their username.
     public ApplicationUser getUserFromUsername(String username){
         String sql = "SELECT * FROM users WHERE username = ?";
 
@@ -125,9 +112,7 @@ public class UserDAO {
         return null;
     }
 
-    /**
-     * Returns all users from the database.
-     */
+    // Returns all users from the database.
     public List<ApplicationUser> getAllUsers(){
         String sql = "SELECT * FROM users ORDER BY user_id";
         List<ApplicationUser> users = new ArrayList<>();
@@ -151,9 +136,7 @@ public class UserDAO {
         return users;
     }
 
-    /**
-     * Searches users by username or user ID.
-     */
+    // Searches users by username or user ID.
     public List<ApplicationUser> searchUsers(String keyword){
         String sql = "SELECT * FROM users WHERE " +
                 "username LIKE ? OR CAST(user_id AS TEXT) LIKE ? " +
@@ -182,9 +165,7 @@ public class UserDAO {
         return users;
     }
 
-    /**
-     * Helper method that reads one row from the database and turns it into a ApplicationUser object.
-     */
+    // Helper method that reads one row from the database and turns it into a ApplicationUser object.
     private ApplicationUser extractUserFromResultSet(ResultSet rs) throws SQLException {
         return new ApplicationUser(
                 rs.getInt("user_id"),
